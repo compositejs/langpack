@@ -1,0 +1,34 @@
+{
+  "name": "langpack",
+  "version": "0.1.0",
+  "description": "A javascript library for multiple languages and locales supports.",
+  "main": "index.js",
+  "types": "./index.d.ts",
+  "scripts": {
+    "build": "gulp",
+    "test": "node ./test/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/compositejs/langpack.git"
+  },
+  "keywords": [
+    "language",
+    "multilanguages",
+    "string",
+    "template"
+  ],
+  "author": "Kingcean Tuan <kingcean@live.com> (http://kingcean.org)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/compositejs/langpack/issues"
+  },
+  "homepage": "https://github.com/compositejs/langpack/wiki",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.6.4",
+    "gulp-typescript": "^4.0.2",
+    "gulp-uglify": "^3.0.0",
+    "typescript": "^2.9.1"
+  }
+}
