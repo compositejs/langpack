@@ -5,11 +5,17 @@ let inner = {
     defaultMarket: "en-US",
     format(str: string, args: string[]) {
         if (!str) return "";
-        args.forEach((item, i) => {
-            if (!item) item = "";
-            let placeholder = "{" + i.toString() + "}";
-            str = str.replace(placeholder, item).replace(placeholder, item).replace(placeholder, item).replace(placeholder, item);
-        });
+        if (args && args.length > 0) {
+            args.forEach((item, i) => {
+                if (!item) item = "";
+                let placeholder = "{" + i.toString() + "}";
+                str = str.replace(placeholder, item).replace(placeholder, item).replace(placeholder, item).replace(placeholder, item);
+            });
+            for (let i = args.length; i < args.length + 10; i++) {
+                let placeholder = "{" + i.toString() + "}";
+                str = str.replace(placeholder, "").replace(placeholder, "").replace(placeholder, "").replace(placeholder, "");
+            }
+        }
 
         return str;
     },
@@ -61,13 +67,13 @@ let inner = {
             return lang ? [lang, defaultMarket, inner.defaultMarket] : [market, inner.market, defaultMarket, inner.defaultMarket];
         };
         let obj = {
-            getLanguage() {
+            getLanguageUsed() {
                 return market || inner.market || defaultMarket || inner.defaultMarket;
             },
-            getCurrentLanguage() {
+            getLanguage() {
                 return market;
             },
-            setCurrentLanguage(value?: string) {
+            setLanguage(value?: string) {
                 if (value != null && typeof value !== "string") return false;
                 market = value;
                 return true;
@@ -128,7 +134,7 @@ let inner = {
                 if (!lang || typeof lang !== "string") return undefined;
                 return options[lang] ? options[lang][key] : undefined;
             },
-            setOption(lang: string | null, key: string, value?: any) {
+            setOption(lang: string | null, key: string, value: any) {
                 if (!lang) lang = obj.getLanguage();
                 if (!lang || !key || typeof lang !== "string" || typeof key !== "string") return false;
                 if (value === undefined) {
@@ -148,26 +154,44 @@ let inner = {
     }
 };
 
+/**
+ * Gets the code of the default language
+ * so that it can be used if the current langauge set is not registered
+ */
 export function getDefaultLanguage() {
     return inner.defaultMarket;
 }
 
+/**
+ * Sets the code of the default language.
+ * @param value The code of the new default langauge to set.
+ */
 export function setDefaultLanguage(value: string) {
     if (!value && typeof value !== "string") return false;
     inner.defaultMarket = value;
     return true;
 }
 
+/**
+ * Gets the code of the current language.
+ */
 export function getLanguage() {
     return inner.market;
 }
 
+/**
+ * Sets the code of the current language.
+ * @param value The code of the new current language to set.
+ */
 export function setLanguage(value: string) {
     if (!value && typeof value !== "string") return false;
     inner.market = value;
     return true;
 }
 
+/**
+ * Sets the current language by system language.
+ */
 export function useSystemLanguage() {
     if (typeof navigator === "undefined") return false;
     if (!navigator) return false;
@@ -180,6 +204,10 @@ export function useSystemLanguage() {
     return setLanguage(value);
 }
 
+/**
+ * Sets the current language by the lang attribute in html tag or the specific DOM.
+ * @param dom The DOM to get lang attribute. Or use lang attribute of html tag.
+ */
 export function useDOMLanguage(dom?: HTMLElement) {
     if (!dom && typeof document !== "undefined") {
         if (document) dom = document.documentElement;
@@ -190,6 +218,10 @@ export function useDOMLanguage(dom?: HTMLElement) {
     return setLanguage(value);
 }
 
+/**
+ * Sets the current language by the value in URL query.
+ * @param key The query key of URL. The default is mkt.
+ */
 export function useQueryLanguage(key?: string) {
     let value = getQueryInfo()[key || "mkt"];
     return setLanguage(value);
@@ -201,14 +233,26 @@ try {
     if (!hasSet) hasSet = useDOMLanguage();
 } catch (ex) {}
 
+/**
+ * The resources to manage the langauge packs.
+ */
 export class Resources {
 
     private _res = inner.gen();
 
+    /**
+     * Gets the readonly instance.
+     */
     public readonly readonly: ReadonlyResource;
 
-    public readonly locale: ReadonlyLocalResource;
+    /**
+     * Gets the local resource of the current language.
+     */
+    public readonly locale: ReadonlyLocaleResource;
 
+    /**
+     * Initializes a new instance of the Resources class.
+     */
     constructor() {
         this.readonly = new ReadonlyResource(
             this._res.getLanguage,
@@ -229,58 +273,122 @@ export class Resources {
         this.locale = this.readonly.locale;
     }
 
+    /**
+     * Gets the current language used.
+     */
+    public get languageUsed() {
+        return this._res.getLanguageUsed();
+    }
+
+    /**
+     * Gets the current language if set to override the global one.
+     */
     public get language() {
         return this._res.getLanguage();
     }
 
-    public get currentLanguage() {
-        return this._res.getCurrentLanguage();
+    /**
+     * Sets the current language for this resource.
+     */
+    public set language(value: string) {
+        this._res.setLanguage(value);
     }
 
-    public set currentLanguage(value: string) {
-        this._res.setCurrentLanguage(value);
-    }
-
+    /**
+     * Gets the default language of this resource.
+     */
     public get defaultLanguage() {
         return this._res.getDefaultLanguage();
     }
 
+    /**
+     * Sets the default language for this resource.
+     */
     public set defaultLanguage(value: string) {
         this._res.setDefaultLanguage(value);
     }
 
-    public register(langPack: LanguagePackInfoContract, override?: boolean) {
-        return this._res.register(langPack, override);
+    /**
+     * Registers a language pack.
+     * @param langPack The language pack to register.
+     * @param override true if override the original one if registered; otherwise, false, by default, to merge.
+     */
+    public register(langPack: LanguagePackInfoContract | LanguagePackInfoContract[], override?: boolean) {
+        let count = 0;
+        if (langPack instanceof Array) langPack.forEach(lp => {
+            count += this._res.register(lp, override);
+        });
+        else count = this._res.register(langPack, override);
+        return count;
     }
 
+    /**
+     * Gets the locale string.
+     * @param key The string key.
+     * @param args The arguments used to format.
+     */
     public getLocaleString(key: string, ...args: string[]) {
         let str = this._res.getString(null, true, key);
         return inner.format(str, args);
     }
 
+    /**
+     * Gets the locale string of the specific language.
+     * @param lang The language code.
+     * @param key The string key.
+     * @param args The arguments used to format.
+     */
     public getSpecificLocaleString(lang: string, key: string, ...args: string[]) {
         let str = this._res.getString(lang, true, key);
         return inner.format(str, args);
     }
 
-    public getCurrentPackString(lang: string, key: string, ...args: string[]) {
+    /**
+     * Gets the locale string of the current language pack.
+     * @param lang The language code.
+     * @param key The string key.
+     * @param args The arguments used to format.
+     */
+    public getCurrentPackString(key: string, ...args: string[]) {
         let str = this._res.getString(null, false, key);
         return inner.format(str, args);
     }
 
+    /**
+     * Gets the locale string of the specific language pack.
+     * @param lang The language code.
+     * @param key The string key.
+     * @param args The arguments used to format.
+     */
     public getSpecificPackString(lang: string, key: string, ...args: string[]) {
         let str = this._res.getString(lang, false, key);
         return inner.format(str, args);
     }
 
-    public setString(lang: string, key: string, value: string) {
+    /**
+     * Sets the locale string of a specific language pack.
+     * @param lang The language pack.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public setString(lang: string, key: string, value?: string) {
         return this._res.setString(lang, key, value);
     }
 
-    public setCurrentPackString(key: string, value: string) {
+    /**
+     * Sets the locale string of the language pack of the current language.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public setCurrentPackString(key: string, value?: string) {
         return this._res.setString(null, key, value);
     }
 
+    /**
+     * Sets the strings of a specific language pack.
+     * @param lang The language code.
+     * @param data The strings.
+     */
     public batchSetStrings(lang: string, data: any) {
         if (!data) return 0;
         return this._res.register({
@@ -289,42 +397,92 @@ export class Resources {
         });
     }
 
+    /**
+     * Copies the strings of the current or the specific language.
+     * @param lang The language code; or null, to copy from the current language.
+     * @param thisArg An optional object used to set properties from the strings.
+     */
     public copyStrings(lang?: string, thisArg?: any) {
         return this._res.copyStrings(lang, true, thisArg);
     }
 
-    public copyCurrentPackStrings(lang?: string, thisArg?: any) {
+    /**
+     * Copies the strings of the current or the specific language pack.
+     * @param lang The language code; or null, to copy from the current language pack.
+     * @param thisArg An optional object used to set properties from the strings.
+     */
+    public copySpecificPackStrings(lang?: string, thisArg?: any) {
         return this._res.copyStrings(lang, false, thisArg);
     }
 
+    /**
+     * Gets the keys of the current or the strings of the specific language.
+     * @param lang The language code; or null, to copy from the current language.
+     * @param thisArg An optional object used to set properties from the strings.
+     */
     public getStringsKeys(lang?: string, thisArg?: any) {
         return Object.keys(this._res.copyOptions(lang, true, thisArg));
     }
 
+    /**
+     * Gets the locale option.
+     * @param key The string key.
+     */
     public getLocaleOption(key: string) {
         return this._res.getOption(null, true, key);
     }
 
+    /**
+     * Gets the locale option of the specific language.
+     * @param lang The language code.
+     * @param key The string key.
+     */
     public getSpecificLocaleOption(lang: string, key: string) {
         return this._res.getOption(lang, true, key);
     }
 
+    /**
+     * Gets the locale option of the current language pack.
+     * @param lang The language code.
+     * @param key The string key.
+     */
     public getCurrentPackOption(key: string) {
         return this._res.getOption(null, false, key);
     }
 
+    /**
+     * Gets the locale option of the specific language pack.
+     * @param lang The language code.
+     * @param key The string key.
+     */
     public getSpecificPackOption(lang: string, key: string) {
         return this._res.getOption(lang, false, key);
     }
 
-    public setOption(lang: string, key: string, value: string) {
+    /**
+     * Sets the locale option of a specific language pack.
+     * @param lang The language pack.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public setOption(lang: string, key: string, value?: any) {
         return this._res.setOption(lang, key, value);
     }
 
-    public setCurrentPackOption(key: string, value: string) {
+    /**
+     * Sets the locale string of the language pack of the current language.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public setCurrentPackOption(key: string, value?: any) {
         return this._res.setOption(null, key, value);
     }
 
+    /**
+     * Sets the options of a specific language pack.
+     * @param lang The language code.
+     * @param data The options.
+     */
     public batchSetOptions(lang: string, data: any) {
         if (!data) return 0;
         return this._res.register({
@@ -334,14 +492,29 @@ export class Resources {
         });
     }
 
+    /**
+     * Copies the options of the current or the specific language.
+     * @param lang The language code; or null, to copy from the current language.
+     * @param thisArg An optional object used to set properties from the options.
+     */
     public copyOptions(lang?: string, thisArg?: any) {
         return this._res.copyOptions(lang, true, thisArg);
     }
 
-    public copyCurrentPackOptions(lang?: string, thisArg?: any) {
+    /**
+     * Copies the options of the current or the specific language pack.
+     * @param lang The language code; or null, to copy from the current language pack.
+     * @param thisArg An optional object used to set properties from the options.
+     */
+    public copySpecificPackOptions(lang?: string, thisArg?: any) {
         return this._res.copyOptions(lang, false, thisArg);
     }
 
+    /**
+     * Gets the keys of the current or the options of the specific language.
+     * @param lang The language code; or null, to copy from the current language.
+     * @param thisArg An optional object used to set properties from the options.
+     */
     public getOptionsKeys(lang?: string, thisArg?: any) {
         return Object.keys(this._res.copyOptions(lang, true, thisArg));
     }

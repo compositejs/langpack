@@ -1,6 +1,6 @@
 {
   "name": "langpack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A javascript library for multiple languages and locales supports.",
   "main": "index.js",
   "types": "./index.d.ts",
