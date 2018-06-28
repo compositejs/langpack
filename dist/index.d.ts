@@ -54,10 +54,11 @@ declare namespace LangPack {
         private _copyStrings;
         private _getOption;
         private _copyOptions;
+        private _getProp;
         /**
          * Initializes a new instance of the ReadonlyLocaleResource class.
          */
-        constructor(_language: () => string, _getString: (locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (locale: boolean, thisArg: any) => any, _getOption: (locale: boolean, key: string) => any, _copyOptions: (locale: boolean, thisArg: any) => any);
+        constructor(_language: () => string, _getString: (locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (locale: boolean, thisArg: any) => any, _getOption: (locale: boolean, key: string) => any, _copyOptions: (locale: boolean, thisArg: any) => any, _getProp: (key: string) => any);
         /**
          * Gets the code of this locale resource..
          */
@@ -104,6 +105,11 @@ declare namespace LangPack {
          * @param thisArg An optional object used to set properties from the options.
          */
         copyCurrentPackOptions(thisArg?: any): any;
+        /**
+         * Gets the specific prop.
+         * @param key The property key.
+         */
+        getProp(key: string): any;
     }
     /**
      * The resources to load strings and options from the langauge packs.
@@ -114,6 +120,7 @@ declare namespace LangPack {
         private _copyStrings;
         private _getOption;
         private _copyOptions;
+        private _getProp;
         /**
          * Gets the local resource of the current language.
          */
@@ -121,7 +128,7 @@ declare namespace LangPack {
         /**
          * Initializes a new instance of the ReadonlyResources class.
          */
-        constructor(_language: () => string, _getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (lang: string, locale: boolean, thisArg: any) => any, _getOption: (lang: string, locale: boolean, key: string) => any, _copyOptions: (lang: string, locale: boolean, thisArg: any) => any);
+        constructor(_language: () => string, _getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (lang: string, locale: boolean, thisArg: any) => any, _getOption: (lang: string, locale: boolean, key: string) => any, _copyOptions: (lang: string, locale: boolean, thisArg: any) => any, _getProp: (key: string) => any);
         /**
          * Gets the specific locale resource.
          * @param lang The language code.
@@ -217,6 +224,11 @@ declare namespace LangPack {
          * @param thisArg An optional object used to set properties from the options.
          */
         getOptionsKeys(lang?: string, thisArg?: any): string[];
+        /**
+         * Gets the specific prop.
+         * @param key The property key.
+         */
+        getProp(key: string): any;
     }
 }
 declare namespace LangPack {
@@ -335,6 +347,19 @@ declare namespace LangPack {
          */
         setCurrentPackString(key: string, value?: string): boolean;
         /**
+         * Removes the locale string of a specific language pack.
+         * @param lang The language pack.
+         * @param key The string key.
+         * @param value The string.
+         */
+        removeString(lang: string, key: string, value?: string): boolean;
+        /**
+         * Removes the locale string of the language pack of the current language.
+         * @param key The string key.
+         * @param value The string.
+         */
+        removeCurrentPackString(key: string, value?: string): boolean;
+        /**
          * Sets the strings of a specific language pack.
          * @param lang The language code.
          * @param data The strings.
@@ -395,6 +420,17 @@ declare namespace LangPack {
          */
         setCurrentPackOption(key: string, value?: any): boolean;
         /**
+         * Removes the locale option of a specific language pack.
+         * @param lang The language pack.
+         * @param key The string key.
+         */
+        removeOption(lang: string, key: string): boolean;
+        /**
+         * Removes the locale string of the language pack of the current language.
+         * @param key The string key.
+         */
+        removeCurrentPackOption(key: string): boolean;
+        /**
          * Sets the options of a specific language pack.
          * @param lang The language code.
          * @param data The options.
@@ -418,5 +454,21 @@ declare namespace LangPack {
          * @param thisArg An optional object used to set properties from the options.
          */
         getOptionsKeys(lang?: string, thisArg?: any): string[];
+        /**
+         * Gets the specific prop.
+         * @param key The property key.
+         */
+        getProp(key: string): any;
+        /**
+         * Sets the specific prop.
+         * @param key The property key.
+         * @param value The value of the property
+         */
+        setProp(key: string, value: any): boolean;
+        /**
+         * Removes the specific prop.
+         * @param key The property key.
+         */
+        removeProp(key: string): boolean;
     }
 }

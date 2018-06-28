@@ -13,7 +13,8 @@ export class ReadonlyLocaleResource {
         private _getString: (locale: boolean, key: string, ...args: string[]) => string,
         private _copyStrings: (locale: boolean, thisArg: any) => any,
         private _getOption: (locale: boolean, key: string) => any,
-        private _copyOptions: (locale: boolean, thisArg: any) => any
+        private _copyOptions: (locale: boolean, thisArg: any) => any,
+        private _getProp: (key: string) => any
     ) {}
 
     /**
@@ -88,6 +89,14 @@ export class ReadonlyLocaleResource {
     public copyCurrentPackOptions(thisArg?: any) {
         return this._copyOptions(false, thisArg);
     }
+
+    /**
+     * Gets the specific prop.
+     * @param key The property key.
+     */
+    public getProp(key: string) {
+        return this._getProp(key);
+    }
 }
 
 /**
@@ -108,7 +117,8 @@ export class ReadonlyResource {
         private _getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string,
         private _copyStrings: (lang: string, locale: boolean, thisArg: any) => any,
         private _getOption: (lang: string, locale: boolean, key: string) => any,
-        private _copyOptions: (lang: string, locale: boolean, thisArg: any) => any
+        private _copyOptions: (lang: string, locale: boolean, thisArg: any) => any,
+        private _getProp: (key: string) => any
     ) {
         this.locale = this.specific(null);
     }
@@ -134,6 +144,9 @@ export class ReadonlyResource {
             },
             (locale, thisArg) => {
                 return this._copyOptions(getLang(), locale, thisArg);
+            },
+            key => {
+                return this._getProp(key);
             }
         )
     }
@@ -271,6 +284,14 @@ export class ReadonlyResource {
      */
     public getOptionsKeys(lang?: string, thisArg?: any) {
         return Object.keys(this._copyOptions(lang, true, thisArg));
+    }
+
+    /**
+     * Gets the specific prop.
+     * @param key The property key.
+     */
+    public getProp(key: string) {
+        return this._getProp(key);
     }
 }
 

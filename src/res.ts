@@ -61,6 +61,7 @@ let inner = {
     gen() {
         let strings = {} as any;
         let options = {} as any;
+        let props = {} as any;
         let market: string;
         let defaultMarket: string;
         let getMarkets = (lang?: string) => {
@@ -148,6 +149,20 @@ let inner = {
             },
             copyOptions(lang: string | null, locale: boolean, thisArg: any) {
                 return inner.getLocalProperties(options, locale ? getMarkets(lang) : [lang || obj.getLanguage()], thisArg);
+            },
+            getProp(key: string) {
+                if (!key || typeof key !== "string") return undefined;
+                return props[key];
+            },
+            setProp(key: string, value: any) {
+                if (!key || typeof key !== "string") return false;
+                props[key] = value;
+                return true;
+            },
+            removeProp(key: string) {
+                if (!key || typeof key !== "string") return false;
+                delete props[key];
+                return true;
             }
         };
         return obj;
@@ -268,6 +283,9 @@ export class Resources {
             },
             (lang, locale, thisArg) => {
                 return this._res.copyOptions(lang, locale, thisArg);
+            },
+            key => {
+                return this._res.getProp(key);
             }
         );
         this.locale = this.readonly.locale;
@@ -385,6 +403,25 @@ export class Resources {
     }
 
     /**
+     * Removes the locale string of a specific language pack.
+     * @param lang The language pack.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public removeString(lang: string, key: string, value?: string) {
+        return this._res.setString(lang, key, undefined);
+    }
+
+    /**
+     * Removes the locale string of the language pack of the current language.
+     * @param key The string key.
+     * @param value The string.
+     */
+    public removeCurrentPackString(key: string, value?: string) {
+        return this._res.setString(null, key, undefined);
+    }
+
+    /**
      * Sets the strings of a specific language pack.
      * @param lang The language code.
      * @param data The strings.
@@ -479,6 +516,23 @@ export class Resources {
     }
 
     /**
+     * Removes the locale option of a specific language pack.
+     * @param lang The language pack.
+     * @param key The string key.
+     */
+    public removeOption(lang: string, key: string) {
+        return this._res.setOption(lang, key, undefined);
+    }
+
+    /**
+     * Removes the locale string of the language pack of the current language.
+     * @param key The string key.
+     */
+    public removeCurrentPackOption(key: string) {
+        return this._res.setOption(null, key, undefined);
+    }
+
+    /**
      * Sets the options of a specific language pack.
      * @param lang The language code.
      * @param data The options.
@@ -517,6 +571,31 @@ export class Resources {
      */
     public getOptionsKeys(lang?: string, thisArg?: any) {
         return Object.keys(this._res.copyOptions(lang, true, thisArg));
+    }
+
+    /**
+     * Gets the specific prop.
+     * @param key The property key.
+     */
+    public getProp(key: string) {
+        return this._res.getProp(key);
+    }
+
+    /**
+     * Sets the specific prop.
+     * @param key The property key.
+     * @param value The value of the property
+     */
+    public setProp(key: string, value: any) {
+        return this._res.setProp(key, value);
+    }
+
+    /**
+     * Removes the specific prop.
+     * @param key The property key.
+     */
+    public removeProp(key: string) {
+        return this._res.removeProp(key);
     }
 
 }
