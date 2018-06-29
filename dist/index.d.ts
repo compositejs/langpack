@@ -45,24 +45,41 @@ declare namespace LangPack {
     function getQueryInfo(url?: string, options?: QueryInfoResolveOptionsContract): any;
 }
 declare namespace LangPack {
+    interface ResourceGettersContract {
+        language: () => string;
+        getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string;
+        copyStrings: (lang: string, locale: boolean, thisArg: any) => any;
+        getOption: (lang: string, locale: boolean, key: string) => any;
+        copyOptions: (lang: string, locale: boolean, thisArg: any) => any;
+        getProp: (key: string) => any;
+    }
+    interface ResourceLocaleGettersContract {
+        language: () => string;
+        getString: (locale: boolean, key: string, ...args: string[]) => string;
+        copyStrings: (locale: boolean, thisArg: any) => any;
+        getOption: (locale: boolean, key: string) => any;
+        copyOptions: (locale: boolean, thisArg: any) => any;
+        getProp: (key: string) => any;
+    }
     /**
      * The locale resources to load strings and options from the langauge packs.
      */
     class ReadonlyLocaleResource {
-        private _language;
-        private _getString;
-        private _copyStrings;
-        private _getOption;
-        private _copyOptions;
-        private _getProp;
+        private _impl;
         /**
          * Initializes a new instance of the ReadonlyLocaleResource class.
          */
-        constructor(_language: () => string, _getString: (locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (locale: boolean, thisArg: any) => any, _getOption: (locale: boolean, key: string) => any, _copyOptions: (locale: boolean, thisArg: any) => any, _getProp: (key: string) => any);
+        constructor(_impl: ResourceLocaleGettersContract);
         /**
          * Gets the code of this locale resource..
          */
         readonly language: string;
+        /**
+         * Checks if the specific language covers the current one.
+         * @param lang The language code to compare.
+         * @param exact true if the two should equal; otherwise, false.
+         */
+        isLanguage(lang: string, exact?: boolean): boolean;
         /**
          * Gets the string.
          * @param key The string key.
@@ -115,12 +132,7 @@ declare namespace LangPack {
      * The resources to load strings and options from the langauge packs.
      */
     class ReadonlyResource {
-        private _language;
-        private _getString;
-        private _copyStrings;
-        private _getOption;
-        private _copyOptions;
-        private _getProp;
+        private _impl;
         /**
          * Gets the local resource of the current language.
          */
@@ -128,7 +140,7 @@ declare namespace LangPack {
         /**
          * Initializes a new instance of the ReadonlyResources class.
          */
-        constructor(_language: () => string, _getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string, _copyStrings: (lang: string, locale: boolean, thisArg: any) => any, _getOption: (lang: string, locale: boolean, key: string) => any, _copyOptions: (lang: string, locale: boolean, thisArg: any) => any, _getProp: (key: string) => any);
+        constructor(_impl: ResourceGettersContract);
         /**
          * Gets the specific locale resource.
          * @param lang The language code.
@@ -266,9 +278,16 @@ declare namespace LangPack {
      */
     function useQueryLanguage(key?: string): boolean;
     /**
+     * Checks if the specific language covers the current one.
+     * @param lang The language code to compare.
+     * @param exact true if the two should equal; otherwise, false.
+     * @param compareLang The language code to compare if has; or null, by default, use the current one.
+     */
+    function isLanguage(lang: string, exact?: boolean, compareLang?: string): boolean;
+    /**
      * The resources to manage the langauge packs.
      */
-    class Resources {
+    class Resources extends ReadonlyResource {
         private _res;
         /**
          * Gets the readonly instance.
@@ -471,4 +490,106 @@ declare namespace LangPack {
          */
         removeProp(key: string): boolean;
     }
+}
+declare namespace LangPack {
+    const InnerResource: Resources;
+}
+declare namespace LangPack {
+    interface DateContract {
+        year: number;
+        month: number;
+        date: number;
+        hour?: number;
+        minute?: number;
+        second?: number;
+        millisecond?: number;
+    }
+    interface DateFormatOptions {
+        utc?: boolean;
+        date?: string | boolean;
+        time?: string | boolean;
+    }
+    /**
+     * Parses a date object. A null will be returned if failed to parse.
+     * @param date  The date to parse. It can be (1) a ISO date time string, (2) a YYYYMMDD string, (3) a number of milliseconds from Jan 1st 1970, or (4) an object with year, month and date properties.
+     */
+    function parseDate(date: number | Date | string | DateContract): Date;
+    /**
+     * Gets a string representation of a date. The format of the string depends on the format options and locale.
+     * @param date  The date.
+     * @param format  The format options.
+     */
+    function toDateString(date: number | Date | string | DateContract, format?: boolean | string | DateFormatOptions): string;
+    /**
+     * Gets a string representation of a date differs from now. The format of the string depends on the locale.
+     * @param date  The date.
+     */
+    function toDateDiffString(date: number | Date | string | DateContract, compareDate?: number | Date | string | DateContract): string;
+    /**
+     * Gets a string list of all week day.
+     */
+    function getWeekDayStrings(startDay?: number): string[];
+    /**
+     * Gets a string representation of a week day. The format of the string depends on the locale.
+     * @param weekDay  a week day number, or a date.
+     * @param short  An optional value indicating whether the week day is short. Default is false, for full word; true, "s" or "short" is for short word; "c" or "character" is for character; "n" or "number" is for number.
+     */
+    function toWeekDayString(weekDay: number | Date, short?: boolean | "f" | "full" | "l" | "long" | "s" | "short" | "c" | "character"): string;
+    /**
+     * Gets a string representation of a time span.
+     * @param milliseconds  The milliseconds.
+     * @param showMillisecond  An optional value indicating whether show milliseconds.
+     */
+    function toTimeSpanString(milliseconds: number, showMillisecond?: boolean): string;
+}
+declare namespace LangPack {
+    /**
+     * The options to number string.
+     */
+    interface NumberStringOptions {
+        /**
+         * The empty value output if set.
+         */
+        empty?: string;
+        /**
+         * The precision.
+         */
+        precision?: number;
+        /**
+         * The exponent.
+         */
+        exponent?: number;
+        /**
+         * The minimum figures to return.
+         * Charactor 0 will fill as prefix if the length is less than this number.
+         */
+        figures?: number;
+        /**
+         * true if return the number with digit groups; otherwise, false.
+         */
+        group?: boolean;
+    }
+    /**
+     * Gets a string representation of a number.
+     * @param num  The number.
+     * @param options  The options with exponent, precision and figures.
+     */
+    function toNumberString(num: number, options?: NumberStringOptions): string;
+    /**
+     * Gets a string representation of a number shorter.
+     * @param total  The number.
+     * @param empty  An optional empty value to return when the specific number is null.
+     */
+    function shortNumber(total: number, empty: boolean | string): string | number;
+    /**
+     * Gets the nearest items of a specific list by comparing its key number.
+     * @param list  The list to resolve.
+     * @param value  The number to compare.
+     * @param compact  The side. Ond of "in", "greater", "less" and "nearby".
+     * @param getValue  A handler to get the key number from the item in list. The result should be a number or an object with from and end properties in number.
+     */
+    function near<T>(list: T[], value: number, compact: boolean | "in" | "greater" | "less" | "nearby", getValue?: ((item: T) => number | {
+        from: number;
+        end: number;
+    })): T[];
 }

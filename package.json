@@ -1,6 +1,6 @@
 {
   "name": "langpack",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A javascript library for multiple languages and locales supports.",
   "main": "index.js",
   "types": "./index.d.ts",
@@ -13,10 +13,12 @@
     "url": "git+https://github.com/compositejs/langpack.git"
   },
   "keywords": [
-    "language",
-    "multilanguages",
+    "multilanguage",
     "string",
-    "template"
+    "template",
+    "localization",
+    "globalization",
+    "datetime"
   ],
   "author": "Kingcean Tuan <kingcean@live.com> (http://kingcean.org)",
   "license": "MIT",

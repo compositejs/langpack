@@ -1,3 +1,5 @@
+/// <reference path="./lp.ts" />
+
 // For asynchronous modules loaders.
 (function () {
     if (typeof define === 'function') {

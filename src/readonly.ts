@@ -1,5 +1,23 @@
 namespace LangPack {
 
+export interface ResourceGettersContract {
+    language: () => string,
+    getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string,
+    copyStrings: (lang: string, locale: boolean, thisArg: any) => any,
+    getOption: (lang: string, locale: boolean, key: string) => any,
+    copyOptions: (lang: string, locale: boolean, thisArg: any) => any,
+    getProp: (key: string) => any
+}
+
+export interface ResourceLocaleGettersContract {
+    language: () => string,
+    getString: (locale: boolean, key: string, ...args: string[]) => string,
+    copyStrings: (locale: boolean, thisArg: any) => any,
+    getOption: (locale: boolean, key: string) => any,
+    copyOptions: (locale: boolean, thisArg: any) => any,
+    getProp: (key: string) => any
+}
+
 /**
  * The locale resources to load strings and options from the langauge packs.
  */
@@ -9,19 +27,23 @@ export class ReadonlyLocaleResource {
      * Initializes a new instance of the ReadonlyLocaleResource class.
      */
     constructor(
-        private _language: () => string,
-        private _getString: (locale: boolean, key: string, ...args: string[]) => string,
-        private _copyStrings: (locale: boolean, thisArg: any) => any,
-        private _getOption: (locale: boolean, key: string) => any,
-        private _copyOptions: (locale: boolean, thisArg: any) => any,
-        private _getProp: (key: string) => any
+        private _impl: ResourceLocaleGettersContract
     ) {}
 
     /**
      * Gets the code of this locale resource..
      */
     public get language() {
-        return this._language();
+        return this._impl.language();
+    }
+
+    /**
+     * Checks if the specific language covers the current one.
+     * @param lang The language code to compare.
+     * @param exact true if the two should equal; otherwise, false.
+     */
+    public isLanguage(lang: string, exact?: boolean) {
+        return isLanguage(lang, exact, this._impl.language());
     }
 
     /**
@@ -30,7 +52,7 @@ export class ReadonlyLocaleResource {
      * @param args The arguments used to format.
      */
     public getString(key: string, ...args: string[]) {
-        return this._getString(true, key, ...args);
+        return this._impl.getString(true, key, ...args);
     }
 
     /**
@@ -39,7 +61,7 @@ export class ReadonlyLocaleResource {
      * @param args The arguments used to format.
      */
     public getCurrentPackString(key: string, ...args: string[]) {
-        return this._getString(false, key, ...args);
+        return this._impl.getString(false, key, ...args);
     }
 
     /**
@@ -47,7 +69,7 @@ export class ReadonlyLocaleResource {
      * @param thisArg An optional object used to set properties from the strings.
      */
     public copyStrings(thisArg?: any) {
-        return this._copyStrings(true, thisArg);
+        return this._impl.copyStrings(true, thisArg);
     }
 
     /**
@@ -55,7 +77,7 @@ export class ReadonlyLocaleResource {
      * @param thisArg An optional object used to set properties from the strings.
      */
     public copyCurrentPackStrings(thisArg?: any) {
-        return this._copyStrings(false, thisArg);
+        return this._impl.copyStrings(false, thisArg);
     }
 
     /**
@@ -63,7 +85,7 @@ export class ReadonlyLocaleResource {
      * @param key The string key.
      */
     public getOptions(key: string) {
-        return this._getOption(true, key);
+        return this._impl.getOption(true, key);
     }
 
     /**
@@ -71,7 +93,7 @@ export class ReadonlyLocaleResource {
      * @param key The string key.
      */
     public getCurrentPackOption(key: string) {
-        return this._getOption(false, key);
+        return this._impl.getOption(false, key);
     }
 
     /**
@@ -79,7 +101,7 @@ export class ReadonlyLocaleResource {
      * @param thisArg An optional object used to set properties from the options.
      */
     public copyOptions(thisArg?: any) {
-        return this._copyOptions(true, thisArg);
+        return this._impl.copyOptions(true, thisArg);
     }
 
     /**
@@ -87,7 +109,7 @@ export class ReadonlyLocaleResource {
      * @param thisArg An optional object used to set properties from the options.
      */
     public copyCurrentPackOptions(thisArg?: any) {
-        return this._copyOptions(false, thisArg);
+        return this._impl.copyOptions(false, thisArg);
     }
 
     /**
@@ -95,7 +117,7 @@ export class ReadonlyLocaleResource {
      * @param key The property key.
      */
     public getProp(key: string) {
-        return this._getProp(key);
+        return this._impl.getProp(key);
     }
 }
 
@@ -112,14 +134,7 @@ export class ReadonlyResource {
     /**
      * Initializes a new instance of the ReadonlyResources class.
      */
-    constructor(
-        private _language: () => string,
-        private _getString: (lang: string, locale: boolean, key: string, ...args: string[]) => string,
-        private _copyStrings: (lang: string, locale: boolean, thisArg: any) => any,
-        private _getOption: (lang: string, locale: boolean, key: string) => any,
-        private _copyOptions: (lang: string, locale: boolean, thisArg: any) => any,
-        private _getProp: (key: string) => any
-    ) {
+    constructor(private _impl: ResourceGettersContract) {
         this.locale = this.specific(null);
     }
 
@@ -130,32 +145,32 @@ export class ReadonlyResource {
     public specific(lang: string | null) {
         let getLang = lang ? () => {
             return lang;
-        } : this._language;
-        return new ReadonlyLocaleResource(
-            getLang,
-            (locale, key, ...args) => {
-                return this._getString(getLang(), locale, key, ...args);
+        } : this._impl.language;
+        return new ReadonlyLocaleResource({
+            language: getLang,
+            getString(locale, key, ...args) {
+                return this._impl.getString(getLang(), locale, key, ...args);
             },
-            (locale, thisArg) => {
-                return this._copyStrings(getLang(), locale, thisArg);
+            copyStrings(locale, thisArg) {
+                return this._impl.copyStrings(getLang(), locale, thisArg);
             },
-            (locale, key) => {
-                return this._getOption(getLang(), locale, key);
+            getOption(locale, key) {
+                return this._impl.getOption(getLang(), locale, key);
             },
-            (locale, thisArg) => {
-                return this._copyOptions(getLang(), locale, thisArg);
+            copyOptions(locale, thisArg) {
+                return this._impl.copyOptions(getLang(), locale, thisArg);
             },
-            key => {
-                return this._getProp(key);
+            getProp(key) {
+                return this._impl.getProp(key);
             }
-        )
+        });
     }
 
     /**
      * Gets the code of the current language if set to override the global one.
      */
     public get language() {
-        return this._language();
+        return this._impl.language();
     }
 
     /**
@@ -164,7 +179,7 @@ export class ReadonlyResource {
      * @param args The arguments used to format.
      */
     public getLocaleString(key: string, ...args: string[]) {
-        return this._getString(null, true, key, ...args);
+        return this._impl.getString(null, true, key, ...args);
     }
 
     /**
@@ -174,7 +189,7 @@ export class ReadonlyResource {
      * @param args The arguments used to format.
      */
     public getSpecificLocaleString(lang: string, key: string, ...args: string[]) {
-        return this._getString(lang, true, key, ...args);
+        return this._impl.getString(lang, true, key, ...args);
     }
 
     /**
@@ -184,7 +199,7 @@ export class ReadonlyResource {
      * @param args The arguments used to format.
      */
     public getCurrentPackString(key: string, ...args: string[]) {
-        return this._getString(null, false, key, ...args);
+        return this._impl.getString(null, false, key, ...args);
     }
 
     /**
@@ -194,7 +209,7 @@ export class ReadonlyResource {
      * @param args The arguments used to format.
      */
     public getSpecificPackString(lang: string, key: string, ...args: string[]) {
-        return this._getString(lang, false, key, ...args);
+        return this._impl.getString(lang, false, key, ...args);
     }
 
     /**
@@ -203,7 +218,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the strings.
      */
     public copyStrings(lang?: string, thisArg?: any) {
-        return this._copyStrings(lang, true, thisArg);
+        return this._impl.copyStrings(lang, true, thisArg);
     }
 
     /**
@@ -212,7 +227,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the strings.
      */
     public copySpecificPackStrings(lang?: string, thisArg?: any) {
-        return this._copyStrings(lang, false, thisArg);
+        return this._impl.copyStrings(lang, false, thisArg);
     }
 
     /**
@@ -221,7 +236,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the strings.
      */
     public getStringsKeys(lang?: string, thisArg?: any) {
-        return Object.keys(this._copyOptions(lang, true, thisArg));
+        return Object.keys(this._impl.copyOptions(lang, true, thisArg));
     }
 
     /**
@@ -229,7 +244,7 @@ export class ReadonlyResource {
      * @param key The string key.
      */
     public getLocalOption(key: string) {
-        return this._getOption(null, true, key);
+        return this._impl.getOption(null, true, key);
     }
 
     /**
@@ -238,7 +253,7 @@ export class ReadonlyResource {
      * @param key The string key.
      */
     public getSpecificLocaleOption(lang: string, key: string) {
-        return this._getOption(lang, true, key);
+        return this._impl.getOption(lang, true, key);
     }
 
     /**
@@ -247,7 +262,7 @@ export class ReadonlyResource {
      * @param key The string key.
      */
     public getCurrentPackOption(key: string) {
-        return this._getOption(null, false, key);
+        return this._impl.getOption(null, false, key);
     }
 
     /**
@@ -256,7 +271,7 @@ export class ReadonlyResource {
      * @param key The string key.
      */
     public getSpecificPackOption(lang: string, key: string) {
-        return this._getOption(lang, false, key);
+        return this._impl.getOption(lang, false, key);
     }
 
     /**
@@ -265,7 +280,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the options.
      */
     public copyOptions(lang?: string, thisArg?: any) {
-        return this._copyOptions(lang, true, thisArg);
+        return this._impl.copyOptions(lang, true, thisArg);
     }
 
     /**
@@ -274,7 +289,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the options.
      */
     public copySpecificPackOptions(lang?: string, thisArg?: any) {
-        return this._copyOptions(lang, false, thisArg);
+        return this._impl.copyOptions(lang, false, thisArg);
     }
 
     /**
@@ -283,7 +298,7 @@ export class ReadonlyResource {
      * @param thisArg An optional object used to set properties from the options.
      */
     public getOptionsKeys(lang?: string, thisArg?: any) {
-        return Object.keys(this._copyOptions(lang, true, thisArg));
+        return Object.keys(this._impl.copyOptions(lang, true, thisArg));
     }
 
     /**
@@ -291,7 +306,7 @@ export class ReadonlyResource {
      * @param key The property key.
      */
     public getProp(key: string) {
-        return this._getProp(key);
+        return this._impl.getProp(key);
     }
 }
 

@@ -1,4 +1,24 @@
+/// <reference path="./readonly.ts" />
+
 namespace LangPack {
+
+interface ResourceAccessorContract {
+    getLanguageUsed(): string;
+    getLanguage(): string;
+    setLanguage(value?: string): boolean;
+    getDefaultLanguage(value?: string): string;
+    setDefaultLanguage(value?: string): boolean;
+    register(langPack: LanguagePackInfoContract, override?: boolean): number;
+    getString(lang: string | null, locale: boolean, key: string): string | undefined;
+    setString(lang: string | null, key: string, value: string): boolean;
+    copyStrings(lang: string | null, locale: boolean, thisArg: any): any;
+    getOption(lang: string | null, locale: boolean, key: string): any;
+    setOption(lang: string | null, key: string, value: any): boolean;
+    copyOptions(lang: string | null, locale: boolean, thisArg: any): any;
+    getProp(key: string): any;
+    setProp(key: string, value: any): boolean;
+    removeProp(key: string): boolean;
+}
 
 let inner = {
     market: undefined as string,
@@ -11,7 +31,7 @@ let inner = {
                 let placeholder = "{" + i.toString() + "}";
                 str = str.replace(placeholder, item).replace(placeholder, item).replace(placeholder, item).replace(placeholder, item);
             });
-            for (let i = args.length; i < args.length + 10; i++) {
+            for (let i = args.length; i < 20; i++) {
                 let placeholder = "{" + i.toString() + "}";
                 str = str.replace(placeholder, "").replace(placeholder, "").replace(placeholder, "").replace(placeholder, "");
             }
@@ -67,7 +87,7 @@ let inner = {
         let getMarkets = (lang?: string) => {
             return lang ? [lang, defaultMarket, inner.defaultMarket] : [market, inner.market, defaultMarket, inner.defaultMarket];
         };
-        let obj = {
+        let obj: ResourceAccessorContract = {
             getLanguageUsed() {
                 return market || inner.market || defaultMarket || inner.defaultMarket;
             },
@@ -242,18 +262,59 @@ export function useQueryLanguage(key?: string) {
     return setLanguage(value);
 }
 
+/**
+ * Checks if the specific language covers the current one.
+ * @param lang The language code to compare.
+ * @param exact true if the two should equal; otherwise, false.
+ * @param compareLang The language code to compare if has; or null, by default, use the current one.
+ */
+export function isLanguage(lang: string, exact?: boolean, compareLang?: string) {
+    if (!lang) return true;
+    if (typeof lang !== "string") return false;
+    lang = lang.toLowerCase();
+    if (compareLang == null) compareLang = getLanguage() || getDefaultLanguage();
+    if (!compareLang || typeof compareLang !== "string") return false;
+    compareLang = compareLang.toLowerCase();
+    if (lang === compareLang) return true;
+    if (exact) return false;
+    return compareLang.indexOf(lang + "-") === 0;
+}
+
 try {
     let hasSet = useQueryLanguage();
     if (!hasSet) hasSet = useSystemLanguage();
     if (!hasSet) hasSet = useDOMLanguage();
 } catch (ex) {}
 
+function a() {
+    let res = inner.gen();
+    let provider: ResourceGettersContract = {
+        language: res.getLanguage,
+        getString(lang, locale, key, ...args) {
+            let str = res.getString(lang, locale, key);
+            return inner.format(str, args);
+        },
+        copyStrings(lang, locale, thisArg) {
+            return res.copyStrings(lang, locale, thisArg);
+        },
+        getOption(lang, locale, key) {
+            return res.getOption(lang, locale, key);
+        },
+        copyOptions(lang, locale, thisArg) {
+            return res.copyOptions(lang, locale, thisArg);
+        },
+        getProp(key) {
+            return res.getProp(key);
+        }
+    };
+}
+
 /**
  * The resources to manage the langauge packs.
  */
-export class Resources {
+export class Resources extends ReadonlyResource {
 
-    private _res = inner.gen();
+    private _res: ResourceAccessorContract;
 
     /**
      * Gets the readonly instance.
@@ -269,25 +330,29 @@ export class Resources {
      * Initializes a new instance of the Resources class.
      */
     constructor() {
-        this.readonly = new ReadonlyResource(
-            this._res.getLanguage,
-            (lang, locale, key, ...args) => {
-                let str = this._res.getString(lang, locale, key);
+        let res = inner.gen();
+        let provider: ResourceGettersContract = {
+            language: res.getLanguage,
+            getString(lang, locale, key, ...args) {
+                let str = res.getString(lang, locale, key);
                 return inner.format(str, args);
             },
-            (lang, locale, thisArg) => {
-                return this._res.copyStrings(lang, locale, thisArg);
+            copyStrings(lang, locale, thisArg) {
+                return res.copyStrings(lang, locale, thisArg);
             },
-            (lang, locale, key) => {
-                return this._res.getOption(lang, locale, key);
+            getOption(lang, locale, key) {
+                return res.getOption(lang, locale, key);
             },
-            (lang, locale, thisArg) => {
-                return this._res.copyOptions(lang, locale, thisArg);
+            copyOptions(lang, locale, thisArg) {
+                return res.copyOptions(lang, locale, thisArg);
             },
-            key => {
-                return this._res.getProp(key);
+            getProp(key) {
+                return res.getProp(key);
             }
-        );
+        };
+        super(provider);
+        this._res = res;
+        this.readonly = new ReadonlyResource(provider);
         this.locale = this.readonly.locale;
     }
 
