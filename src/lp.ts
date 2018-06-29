@@ -97,7 +97,8 @@ let en: LanguagePackInfoContract = {
         rsquo: "'",
         slightPauseMark: ", ",
         bookTitle: "{0}",
-        name: "Name"
+        name: "Name",
+        currentLanguage: "English"
     },
     options: {
         lcid: 1033
@@ -199,7 +200,8 @@ let zh_Hans: LanguagePackInfoContract = {
         rsquo: "”",
         slightPauseMark: "、",
         bookTitle: "《{0}》",
-        name: "名称"
+        name: "名称",
+        currentLanguage: "简体中文"
     },
     options: {
         lcid: 2052

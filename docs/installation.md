@@ -70,4 +70,4 @@ console.info(res.getLocaleString("name"));
 
 ---
 
-[Back](./)
+[Next](./localization)

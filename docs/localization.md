@@ -67,10 +67,14 @@ The current language is loaded from your browser. To change language, just call 
 setLanguage("zh-Hans-CN");
 ```
 
-## Readonly instance
+## Readonly locale instance
 
-You can also export a readonly client for other files.
+You can also export a readonly client of the current language so that you can read its strings in other places.
 
 ```typescript
-export res.readonly;
+export default res.locale;
 ```
+
+---
+
+[Back](../README)
