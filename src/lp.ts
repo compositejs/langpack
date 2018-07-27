@@ -68,6 +68,7 @@ let en: LanguagePackInfoContract = {
         tomorrow: "Tomorrow",
         twoDaysLater: "2d later",
         daysLater: "{0}d later",
+        now: "Now",
         today: "Today",
         timeDate: "{0} {1}",
         dateFull: "MM/DD/YYYY",
@@ -106,7 +107,7 @@ let en: LanguagePackInfoContract = {
 };
 
 let zh_Hans: LanguagePackInfoContract = {
-    language: ["zh", "zh-Hans", "zh-CHS", "zh-CN", "zh-SG", "zh-gan"],
+    language: ["zh", "zh-Hans", "zh-CHS", "zh-CN", "zh-SG", "zh-cmn", "zh-gan", "zh-wu"],
     strings: {
         prefix: "前缀",
         suffix: "后缀",
@@ -171,6 +172,7 @@ let zh_Hans: LanguagePackInfoContract = {
         tomorrow: "明天",
         twoDaysLater: "后天",
         daysLater: "{0}天后",
+        now: "现在",
         today: "今天",
         timeDate: "{1} {0}",
         dateFull: "YYYY-MM-DD",
@@ -196,8 +198,8 @@ let zh_Hans: LanguagePackInfoContract = {
         exclamationSymbol: "！",
         ldquo: "“",
         rdquo: "”",
-        lsquo: "“",
-        rsquo: "”",
+        lsquo: "‘",
+        rsquo: "’",
         slightPauseMark: "、",
         bookTitle: "《{0}》",
         name: "名称",
