@@ -1,4 +1,4 @@
-You can install this web front-end library by npm or by downloading the bundled file to insert a `script` tag into your web page directly.
+You can install this web front-end library by [npm](https://www.npmjs.com/package/langpack) or by downloading the bundled file to insert a `script` tag into your web page directly.
 
 ## ES6 / Type Script via npm
 
