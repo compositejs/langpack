@@ -2,6 +2,8 @@
 
 ## Supported Versions
 
+See [releases](https://github.com/compositejs/langpack/releases) or [npm](https://www.npmjs.com/package/langpack) to get details about each release.
+
 - v1.0
 
 ## Reporting a Vulnerability
