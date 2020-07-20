@@ -73,7 +73,7 @@ declare namespace LangPack {
         /**
          * Gets the code of this locale resource..
          */
-        readonly language: string;
+        get language(): string;
         /**
          * Checks if the specific language covers the current one.
          * @param lang The language code to compare.
@@ -149,7 +149,7 @@ declare namespace LangPack {
         /**
          * Gets the code of the current language if set to override the global one.
          */
-        readonly language: string;
+        get language(): string;
         /**
          * Gets the locale string.
          * @param key The string key.
@@ -304,21 +304,23 @@ declare namespace LangPack {
         /**
          * Gets the current language used.
          */
-        readonly languageUsed: string;
+        get languageUsed(): string;
         /**
          * Gets the current language if set to override the global one.
          */
+        get language(): string;
         /**
-        * Sets the current language for this resource.
-        */
-        language: string;
+         * Sets the current language for this resource.
+         */
+        set language(value: string);
         /**
          * Gets the default language of this resource.
          */
+        get defaultLanguage(): string;
         /**
-        * Sets the default language for this resource.
-        */
-        defaultLanguage: string;
+         * Sets the default language for this resource.
+         */
+        set defaultLanguage(value: string);
         /**
          * Registers a language pack.
          * @param langPack The language pack to register.
