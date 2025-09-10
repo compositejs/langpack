@@ -19,7 +19,7 @@ And you can also insert one of following [JavaScript bundled file](./dist/index.
 
 ## Features
 
-LangPack help you to build a global web app or create a library with international supports.
+LangPack helps you to build a global web app or create a library with international supports.
 
 Following are the key features that you can click to read more. The samples are written by Type Script by default in these documents.
 
