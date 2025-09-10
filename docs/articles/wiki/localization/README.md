@@ -75,6 +75,7 @@ You can also export a readonly client of the current language so that you can re
 export default res.locale;
 ```
 
+<!-- End -->
 ---
 
-[Back](../README)
+[Back](../../../)

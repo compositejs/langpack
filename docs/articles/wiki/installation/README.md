@@ -68,6 +68,7 @@ res.register({
 console.info(res.getLocaleString("name"));
 ```
 
+<!-- End -->
 ---
 
-[Next](./localization)
+[Next](../localization/)

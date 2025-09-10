@@ -20,8 +20,20 @@
     section.x-part-intro > div > div {
         margin: 10px;
     }
+    section.x-part-intro.x-part-installation > div {
+        border-radius: 0;
+    }
+    section.x-part-intro.x-part-installation > div:first-child {
+        border-radius: 4px 4px 0 0;
+    }
+    section.x-part-intro.x-part-installation > div:last-child {
+        border-radius: 0 0 4px 4px;
+    }
     section.x-part-installation > div > div:first-child, section.x-part-installation > div > img + div {
         margin-top: 0;
+    }
+    section.x-part-installation > div > div:last-child {
+        margin-bottom: 0;
     }
     section.x-part-installation > div > div > span {
         user-select: none;
@@ -119,10 +131,15 @@
                     </code>
                 </div>
             </div>
+            <div>
+                <div>
+                    <a href="./articles/?installation" >Get details &gt;</a>
+                </div>
+            </div>
         </section>
         <h2>Features</h2>
         <section class="x-part-features">
-            <a class="link-long-button" href="https://github.com/compositejs/langpack/wiki/localization" >
+            <a class="link-long-button" href="./articles/?localization" >
                 <span>Localization</span><br />
                 <span>
                     <span>A set of tools to help you to set up the environment for globalization and localization.</span>
