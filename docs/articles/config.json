@@ -11,6 +11,18 @@
             "name": "Localization",
             "url": "/wiki/localization/README.md",
             "end": true
+        },
+        "简体中文",
+        {
+            "name": "安装",
+            "url": "/wiki/anzhuang/README.md",
+            "categories": ["install", "prepare", "npm"],
+            "end": true
+        },
+        {
+            "name": "本地化",
+            "url": "/wiki/bendihua/README.md",
+            "end": true
         }
     ]
 }
