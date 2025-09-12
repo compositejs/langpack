@@ -5,78 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta property="og:image" content="images/bg/poster.jpg">
     <title>LangPack</title>
-    <link href="https://kingcean.org/css/layout.css" rel="stylesheet" />
-    <link href="https://kingcean.org/css/current.css" rel="stylesheet" />
-    <link rel="icon" type="image/png" href="./images/logos/langpack.png">
-    <style type="text/css">
-    body > section {
-        margin-bottom: 100px;
-    }
-    header + section > section:first-child + section.x-part-intro > div {
-        font-size: 16px; padding-right: 69px; position: relative;
-    }
-    header + section > section:first-child + section.x-part-intro > div > div > img {
-        position: absolute; top: 20px; right: 16px; width: 48px; height: 48px;
-    }
-    section.x-part-intro > div {
-        padding: 9px; margin-bottom: 10px; border: 1px solid #333; border-radius: 4px; position: relative;
-    }
-    section.x-part-intro > div > div {
-        margin: 10px;
-    }
-    section.x-part-intro.x-part-installation > div {
-        border-radius: 0;
-    }
-    section.x-part-intro.x-part-installation > div:first-child {
-        border-radius: 4px 4px 0 0;
-    }
-    section.x-part-intro.x-part-installation > div:last-child {
-        border-radius: 0 0 4px 4px;
-    }
-    section.x-part-intro.x-part-installation > div:last-child > div:first-child > a:first-child {
-        display: block;
-    }
-    section.x-part-installation > div > div:first-child, section.x-part-installation > div > img + div {
-        margin-top: 0;
-    }
-    section.x-part-installation > div > div:last-child {
-        margin-bottom: 0;
-    }
-    section.x-part-installation > div > div > span {
-        user-select: none;
-    }
-    section.x-part-installation > div > div.x-part-code {
-        background-color: #2C2C2C; padding: 10px 10px 9px 10px; margin: 10px 0 0 0; border-bottom: 1px solid #393939; border-radius: 4px; transition: 0.2s; overflow-x: auto; scrollbar-color: rgba(128, 128, 128, 0.2) transparent;
-    }
-    section.x-part-installation > div > div.x-part-code:hover {
-        border-bottom: 1px solid #484848;
-    }
-    section.x-part-installation > div:first-child {
-        padding-left: 54px;
-    }
-    section.x-part-installation > div:first-child > img {
-        width: 32px; height: 32px; border-radius: 0 0 4px 4px; position: absolute; top: 0; left: 10px;
-    }
-    section.x-part-installation > div:first-child > img + div {
-        margin-left: 0;
-    }
-    section.x-part-features > a.link-long-button, section.x-part-features > a.link-long-button:visited, section.x-part-features > a.link-long-button:active {
-        padding: 14px 24px 14px 24px;
-    }
-    section.x-part-features > a.link-long-button:hover {
-        padding: 12px 24px 16px 24px;
-    }
-    section.x-part-features > div > div.x-part-code {
-        background-color: #2C2C2C; padding: 9px; margin: 10px; border: 1px solid #333; border-radius: 4px; transition: 0.2s; overflow-x: auto; scrollbar-color: rgba(128, 128, 128, 0.2) transparent;
-    }
-    section.x-part-features > div > div.x-part-code:hover {
-        border-color: #444;
-    }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/css/site.org.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/css/spec.home.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/images/logos/langpack.png">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/hje@2.0.0/dist/index.js" ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/js/site.js" ></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/js/current.js" ></script>
     <script type="text/javascript">
+    function onInit() {
+        let manifest = { name: 'langpack', path: 'dist/index.js' };
+        curSite.initHome(manifest);
+        let ww = site.getString("name") !== "名称";
+        curSite.listModel(ww ? [{
+            name: "Localization",
+            url: "./articles/?localization",
+            desc: "A set of tools to help you to set up the environment for globalization and localization."
+        }] : [{
+            name: "本地化",
+            url: "./articles/?bendihua",
+            desc: "一组用于管理各语言环境的工具。"
+        }], "part-features");
+    }
     </script>
 </head>
-<body>
+<body onload="onInit()">
     <header>
         <section>
             <h1><a href="https://composite.js.org"><strong>Composite</strong><span>Js</span></a></h1>
@@ -102,50 +54,27 @@
         <section class="x-part-intro">
             <div>
                 <div>
-                    <img alt="LangPack" src="./images/logos/langpack.png" />
+                    <img alt="LangPack" src="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/images/logos/langpack.png" />
                     <strong>LangPack</strong><br />
                     <span>helps you to build a global web app or create a library with international supports.</span>
                 </div>
             </div>
         </section>
-        <h2>Installation</h2>
-        <section class="x-part-installation x-part-intro">
-            <div>
-                <img alt="npm" src="https://static-production.npmjs.com/f1786e9b7cba9753ca7b9c40e8b98f67.png" />
-                <div>
-                    <span>Install package to your project by <a href="https://www.npmjs.com/package/langpack" >npm</a>.</span>
-                </div>
-                <div class="x-part-code">
-                    <span>&gt; </span><code><span style="color: #f9f1a5;">npm</span> <span style="color: #CCC;">i langpack</span></code>
-                </div>
-            </div>
+        <h2 id="title-install">Installation</h2>
+        <section id="part-install" class="x-part-installation x-part-intro">
             <div>
                 <div>
-                    <span>Or you can insert <strong>one of</strong> following JavaScript bundled file by <code>script</code> tag into your web page.</span>
-                </div>
-                <div class="x-part-code">
-                    <code>
-                        <span style="color: #808080;">&lt;</span><span style="color: #5c9bd3;">script</span>
-                        <span style="color: #a1dbfc">src</span>=<span style="color: #cb927b">&quot;</span><span style="color: #cb927b">https://cdn.jsdelivr.net/npm/langpack/dist/index.js</span><span style="color: #cb927b">&quot;</span>
-                        <span style="color: #808080;">/&gt;</span>
-                    </code>
-                </div>
-                <div class="x-part-code">
-                    <code>
-                        <span style="color: #808080;">&lt;</span><span style="color: #5c9bd3;">script</span>
-                        <span style="color: #a1dbfc">src</span>=<span style="color: #cb927b">&quot;</span><span style="color: #cb927b">https://unpkg.com/langpack/dist/index.js</span><span style="color: #cb927b">&quot;</span>
-                        <span style="color: #808080;">/&gt;</span>
-                    </code>
-                </div>
-            </div>
-            <div>
-                <div>
+                    <span><a href="https://www.npmjs.com/package/langpack" >Package</a></span>
+                    <span> &nbsp; | &nbsp; </span>
                     <a href="./articles/?installation" >Get details &gt;</a>
+                </div>
+                <div class="x-part-code">
+                    <span>&gt; </span><code>npm i langpack</code>
                 </div>
             </div>
         </section>
-        <h2>Features</h2>
-        <section class="x-part-features">
+        <h2 id="title-features">Features</h2>
+        <section id="part-features" class="x-part-features">
             <a class="link-long-button" href="./articles/?localization" >
                 <span>Localization</span><br />
                 <span>
@@ -176,7 +105,7 @@ console.info(res.getLocaleString("name"));</code></pre>
                 </div>
             </div>
         </section>
-        <h2>Source</h2>
+        <h2 id="title-source">Source</h2>
         <section>
             <a class="link-long-button" href="https://github.com/compositejs/langpack/" >
                 <svg height="24" aria-hidden="true" viewBox="0 0 16 16" version="1.1" width="24" data-view-component="true" class="octicon octicon-mark-github v-align-middle">

@@ -1,0 +1,22 @@
+{
+    "name": "LangPack",
+    "wiki": [
+        {
+            "name": "安装",
+            "url": "/wiki/anzhuang/README.md",
+            "categories": ["install", "prepare", "npm"],
+            "end": true
+        },
+        {
+            "name": "本地化",
+            "url": "/wiki/bendihua/README.md",
+            "end": true
+        }
+    ],
+    "redir": {
+        "installation": "anzhuang",
+        "install": "anzhuang",
+        "localization": "bendihua",
+        "i18n": "bendihua"
+    }
+}
