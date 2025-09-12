@@ -25,6 +25,10 @@
             url: "./articles/?bendihua",
             desc: "一组用于管理各语言环境的工具。"
         }], "part-features");
+        if (ww) return;
+        curSite.setText("text-summary", "本前端库可用于构建多语言支持的网络应用。");
+        curSite.setText("text-intro", "是一套完整的前端本地化方案，可以将多语言文本和其它静态资源进行托管和使用。");
+        curSite.setText("text-sample", "可以注册和获取本地化文本内容。");
     }
     </script>
 </head>
@@ -48,7 +52,7 @@
     <section>
         <section>
             <div>
-                <span>A JavaScript library for enable multiple languages for your web app.</span>
+                <span id="text-summary">A JavaScript library to enable multiple languages for your web app.</span>
             </div>
         </section>
         <section class="x-part-intro">
@@ -56,7 +60,7 @@
                 <div>
                     <img alt="LangPack" src="https://cdn.jsdelivr.net/npm/hje@2.0.0/docs/images/logos/langpack.png" />
                     <strong>LangPack</strong><br />
-                    <span>helps you to build a global web app or create a library with international supports.</span>
+                    <span id="text-intro">helps you to build a global web app or create a library with international supports.</span>
                 </div>
             </div>
         </section>
@@ -85,7 +89,7 @@
         <section class="x-part-features x-part-intro">
             <div>
                 <div>
-                    <span>You can register the strings for usages.</span>
+                    <span id="text-sample">You can register the strings for usages.</span>
                 </div>
                 <div class="x-part-code">
                     <pre><code>import { Resources } from 'langpack';
