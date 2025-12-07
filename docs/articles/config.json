@@ -1,0 +1,29 @@
+{
+    "name": "LangPack",
+    "wiki": [
+        {
+            "name": "Installation",
+            "name#zh": "安装",
+            "dir": "wiki/installation",
+            "dir#zh": "wiki/anzhuang",
+            "file": true,
+            "categories": ["install", "prepare", "npm"],
+            "end": true
+        },
+        {
+            "name": "Localization",
+            "name#zh": "本地化",
+            "dir": "wiki/localization",
+            "dir#zh": "wiki/bendihua",
+            "file": true,
+            "end": true
+        }
+    ],
+    "redir": {
+        "install": "wiki/installation",
+        "installation": "wiki/installation",
+        "anzhuang": "wiki/installation",
+        "wiki/install": "wiki/installation",
+        "i18n": "wiki/localization"
+    }
+}
