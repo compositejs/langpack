@@ -1,4 +1,5 @@
 {
+    "$schema": "https://cdn.jsdelivr.net/npm/hje@2.4.0/dist/mdblogs.schema.json",
     "name": "LangPack",
     "docs": [
         {
@@ -19,6 +20,13 @@
             "end": true
         }
     ],
+    "redir": {
+        "install": "installation",
+        "anzhuang": "installation",
+        "setup": "installation",
+        "bendihua": "localization",
+        "i18n": "localization"
+    },
     "$defs": {
         "contributors": [
             { "name": "Kingcean Tuan", "url": "https://kingcean.org" }
@@ -28,12 +36,5 @@
             { "name": "Prepare", "name#zh": "准备", "value": "prepare" },
             { "name": "NPM", "value": "npm" }
         ]
-    },
-    "redir": {
-        "install": "installation",
-        "anzhuang": "installation",
-        "setup": "installation",
-        "bendihua": "localization",
-        "i18n": "localization"
     }
 }

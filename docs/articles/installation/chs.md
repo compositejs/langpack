@@ -62,7 +62,7 @@ console.info(res.getLocaleString("name"));
 - `https://cdn.jsdelivr.net/npm/langpack/dist/index.js`
 - `https://unpkg.com/langpack/dist/index.js`
 
-然后，可以通过`LangPack`命名空间来进行访问。如下示例。
+然后，可以通过 `LangPack` 命名空间来进行访问。如下示例。
 
 ```typescript
 const { Resources } = LangPack;
