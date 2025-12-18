@@ -1,5 +1,5 @@
 {
-    "$schema": "https://cdn.jsdelivr.net/npm/hje@2.4.0/dist/mdblogs.schema.json",
+    "$schema": "https://cdn.jsdelivr.net/npm/hje@2.4.2/dist/mdblogs.schema.json",
     "name": "LangPack",
     "docs": [
         {
@@ -14,10 +14,15 @@
         {
             "name": "Localization",
             "name#zh": "本地化",
+            "intro": "A set of tools to help you to set up the environment for globalization and localization.",
+            "intro#zh": "一组用于管理各语言环境的工具。",
             "dir": "localization",
             "file": true,
             "file#zh": "chs.md",
-            "end": true
+            "end": true,
+            "options": {
+                "kind": ["featured"]
+            }
         }
     ],
     "redir": {
